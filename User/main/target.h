@@ -244,17 +244,17 @@
 
 #define ADC_CHANNEL_NUMBER				3					// ADC采样通道数
 	
-#define ADC_AIN1_CHANNEL			    ADC_Channel_3		// 模拟输入通道1，温度采样1//电池内部
+#define ADC_AIN1_CHANNEL			    ADC_Channel_1		// 模拟输入通道1，温度采样1//电池内部
 #define ADC_AIN1_PORT					GPIOA
-#define	ADC_AIN1_PIN					GPIO_Pin_3
+#define	ADC_AIN1_PIN					GPIO_Pin_1
 
-#define ADC_AIN2_CHANNEL				ADC_Channel_4		// 模拟输入通道2，温度采样2 //板载
+#define ADC_AIN2_CHANNEL				ADC_Channel_2		// 模拟输入通道2，温度采样2 //板载
 #define ADC_AIN2_PORT					GPIOA
-#define	ADC_AIN2_PIN					GPIO_Pin_4
+#define	ADC_AIN2_PIN					GPIO_Pin_2
 
-#define ADC_AIN3_CHANNEL				ADC_Channel_7		// 模拟输入通道3，钥匙输入检测 //板载
-#define ADC_AIN3_PORT					GPIOA
-#define	ADC_AIN3_PIN					GPIO_Pin_7
+#define ADC_AIN3_CHANNEL				ADC_Channel_8		// 模拟输入通道3，钥匙输入检测 //板载
+#define ADC_AIN3_PORT					GPIOB
+#define	ADC_AIN3_PIN					GPIO_Pin_0
 
 // 串口MODBUS通信模块
 #define USART_MODBUS_SELECT				1						// 选择串口2
@@ -294,7 +294,7 @@
 
 // 驱动输出IO口
 #define	GPIO_LED_RED_PORT				GPIOB					// LED驱动，测试灯
-#define GPIO_LED_RED_PIN				GPIO_Pin_12
+#define GPIO_LED_RED_PIN				GPIO_Pin_9
 
 #define	GPIO_LED_GREEN_PORT				GPIOA					// LED驱动，绿灯
 #define GPIO_LED_GREEN_PIN				GPIO_Pin_1
@@ -312,11 +312,11 @@
 #define GPIO_DSGING_EN_PIN				GPIO_Pin_2
 
 
-#define GPIO_LOCK_PORT                  GPIOB                   //电源控制脚
-#define GPIO_LOCK_PIN                   GPIO_Pin_0
+#define GPIO_LOCK_PORT                  GPIOA                   //电源控制脚
+#define GPIO_LOCK_PIN                   GPIO_Pin_4
 
-#define	GPIO_EN_AFE_PORT				GPIOA					// 唤醒AFE
-#define GPIO_EN_AFE_PIN				    GPIO_Pin_6
+#define	GPIO_EN_AFE_PORT				GPIOB					// 唤醒AFE
+#define GPIO_EN_AFE_PIN				    GPIO_Pin_12
 
 
 //#define	GPIO_PWM_OUT_PORT				GPIOB			       // PWM输出 用占空比表示电量

@@ -221,11 +221,11 @@ void RCC_Config(void)
      
     
     RCC_DeInit();                                	// RCC系统复位(用于调试)   
-    RCC_HSEConfig(RCC_HSE_ON);                   	// 使能外部高速晶振（HSE）
-    
-    HSEStartUpStatus = RCC_WaitForHSEStartUp();  	// 等待外部高速晶振（HSE）稳定
-    if(HSEStartUpStatus == SUCCESS)                          // 外部晶振稳定
-    {
+//    RCC_HSEConfig(RCC_HSE_ON);                   	// 使能外部高速晶振（HSE）
+//    
+//    HSEStartUpStatus = RCC_WaitForHSEStartUp();  	// 等待外部高速晶振（HSE）稳定
+//    if(HSEStartUpStatus == SUCCESS)                          // 外部晶振稳定
+//    {
         // 配置flash
         FLASH_PrefetchBufferCmd(ENABLE);           //使能预取缓冲
         FLASH_SetLatency(FLASH_Latency_0);         	// 设置Flash等待延时 1等待延时 
@@ -243,7 +243,7 @@ void RCC_Config(void)
         //RCC_PCLK2Config(RCC_HCLK_Div1);            	// 设置高速AHB时钟，PCLK2 = HCLK     
 
         // 配置锁相环PLL，
-        RCC_PLLConfig(RCC_PLLSource_HSE, RCC_PLLMul_4);        //PLLCLK=8MHz*1=8 MHz 
+        RCC_PLLConfig(RCC_PLLSource_HSI, RCC_PLLMul_4);        //PLLCLK=8MHz*1=8 MHz 
         RCC_PLLCmd(ENABLE);                        //使能PLL
 		
         while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET)          //等待PLL稳定
@@ -258,31 +258,31 @@ void RCC_Config(void)
         while(RCC_GetSYSCLKSource() != 0x08)        //等待HSE被用作系统时钟源
         {
         }
-    }
-    else
-    {
-		// 当外部HSE无法稳定时，使用内部HSI晶振，8MHz，并报错
-		
-		// 使能内部8MHz晶振
-		RCC_HSICmd(ENABLE);
+//    }
+//    else
+//    {
+//		// 当外部HSE无法稳定时，使用内部HSI晶振，8MHz，并报错
+//		
+//		// 使能内部8MHz晶振
+//		RCC_HSICmd(ENABLE);
 
-		// 配置系统时钟源
-		// 0x00：HSI作为系统时钟源
-		// 0x04：HSE作为系统时钟源
-		// 0x08：PLL作为系统时钟源
-		RCC_SYSCLKConfig(RCC_SYSCLKSource_HSI);  		//选择HSI作为系统时钟源
-		while(RCC_GetSYSCLKSource() != 0x00)        	//等待HSI被用作系统时钟源
-		{   
-			// 增加外部故障信号输出
-		}	
-	
-        // 配置flash
-        FLASH_PrefetchBufferCmd(ENABLE);           //使能预取缓冲
-        FLASH_SetLatency(FLASH_Latency_0);         	// 设置Flash等待延时 1等待延时 
-		
-		// ------------- 设置晶振起振失败标志位 -------------------
-		Protect_SetFaultCodeLv0(&g_Protect, FAULT_OSC);
-    }
+//		// 配置系统时钟源
+//		// 0x00：HSI作为系统时钟源
+//		// 0x04：HSE作为系统时钟源
+//		// 0x08：PLL作为系统时钟源
+//		RCC_SYSCLKConfig(RCC_SYSCLKSource_HSI);  		//选择HSI作为系统时钟源
+//		while(RCC_GetSYSCLKSource() != 0x00)        	//等待HSI被用作系统时钟源
+//		{   
+//			// 增加外部故障信号输出
+//		}	
+//	
+//        // 配置flash
+//        FLASH_PrefetchBufferCmd(ENABLE);           //使能预取缓冲
+//        FLASH_SetLatency(FLASH_Latency_0);         	// 设置Flash等待延时 1等待延时 
+//		
+//		// ------------- 设置晶振起振失败标志位 -------------------
+//		Protect_SetFaultCodeLv0(&g_Protect, FAULT_OSC);
+//    }
 	
 	// 使能GPIO及DMA！！！！！
 	RCC_AHBPeriphClockCmd(	0
@@ -519,7 +519,7 @@ void System_Init(void)
 	
    
 
-//#if EN_IWDG ==1
+#if EN_IWDG ==1
 	IWDG_WriteAccessCmd(IWDG_WriteAccess_Enable);
 	
 	IWDG_SetPrescaler(IWDG_Prescaler_32);						// 32倍分频
@@ -534,9 +534,9 @@ void System_Init(void)
 	IWDG_Enable();												// 看门狗使能开关   
     
 	g_SystemState.State.bit.IWDGReloadEnable = 1;				// 使能喂狗			
-//#else
-//#warning "Did not open"//未打开看门狗
-//#endif
+#else
+#warning "Did not open"//未打开看门狗
+#endif
 
    
 //test

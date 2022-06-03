@@ -21,7 +21,7 @@ void LOCK_REST(void)
     GPIO_InitTypeDef GPIO_InitStructure; 
 
     RCC_AHBPeriphClockCmd(	0
-//							| RCC_AHBPeriph_GPIOA
+							| RCC_AHBPeriph_GPIOA
 							| RCC_AHBPeriph_GPIOB
 							| RCC_AHBPeriph_GPIOC
 							| RCC_AHBPeriph_DMA1
@@ -64,7 +64,7 @@ void Output_DeviceInit(void)
 	GPIO_SetBits(GPIO_LED_RED_PORT, GPIO_LED_RED_PIN);
 	
 	GPIO_InitStructure.GPIO_Pin = GPIO_LED_GREEN_PIN;    		// LED绿色，开漏输出，低有效
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;			// 开漏输出，禁用强推挽
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;				// 开漏输出，禁用强推挽
@@ -74,7 +74,7 @@ void Output_DeviceInit(void)
 	GPIO_SetBits(GPIO_LED_GREEN_PORT, GPIO_LED_GREEN_PIN);
 	
 	GPIO_InitStructure.GPIO_Pin = GPIO_LED_BLUE_PIN;    		// LED蓝色，开漏输出，低有效
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;			// 开漏输出，禁用强推挽
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;				// 开漏输出，禁用强推挽
@@ -85,7 +85,7 @@ void Output_DeviceInit(void)
 
 
 	GPIO_InitStructure.GPIO_Pin = GPIO_LED_YELLOW_PIN;    		// LED黄色，开漏输出，低有效
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;			// 开漏输出，禁用强推挽
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;				// 开漏输出，禁用强推挽
@@ -96,7 +96,7 @@ void Output_DeviceInit(void)
     
     // 初始化蜂鸣器GPIO
     GPIO_InitStructure.GPIO_Pin = GPIO_BUZZER_PIN;    		// HORN_M，开漏输出，低有效
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;			// 开漏输出，禁用强推挽
     GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;				// 开漏输出，禁用强推挽
@@ -118,7 +118,7 @@ void Output_DeviceInit(void)
 	
 	//DSGING控制引脚
 	GPIO_InitStructure.GPIO_Pin = GPIO_DSGING_EN_PIN;    		// 
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;			// 开漏输出，禁用强推挽
 	GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
 	GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;				// 开漏输出，禁用强推挽
