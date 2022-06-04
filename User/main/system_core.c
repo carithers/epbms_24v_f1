@@ -187,7 +187,7 @@ void System_1msInterrupt(void)
                 || g_AO_BMS.Output.BatteryTemperatureHi > (g_SystemParameter.BMS.Charge2.ChargeLimitTemperature1 *10 + 50))//55+5=60¶È
             {
                 t_TempLowError++;
-                if(t_TempLowError > 20)
+                if(t_TempLowError > 5)
                 {
                     t_TempLowError = 60;
                     g_SystemState.State.bit.ChargeTempError = 1;                    

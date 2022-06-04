@@ -45,12 +45,15 @@ struct AO_BMS_Variable {
 	u16	ShutdownDelay;						// 过压欠压延时
 	u16	FaultSleepDelay;					// 故障时延时关闭计数器
 	u16	FaultNoRecoverDelay;				// 故障未执行恢复计数器
-	u16	AutoCutoffDelay;					// 输出自动切断延时，单位s
+	u32	AutoCutoffDelay;					// 输出自动切断延时，单位s
 	u16	BatteryExtraBalanceDelay;			// 电池额外均流使能延时
 	u16	BatteryOutputDelay;					// 电池启动输出延时
 	u16 LowCapCutoffCnt;                    // 用于低电量切断计时
     u16 DischargeFilter;
     u16 ChargeCheckCnt;                     // 充电状态判定计时
+    u32 dsg_cnt;
+    u32 dsg_limit_cnt;
+    u32 chg_cnt;
 };
 
 struct AO_BMS_Output {

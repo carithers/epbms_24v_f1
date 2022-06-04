@@ -1618,7 +1618,7 @@ void SH36730x0_SampleUpdate(AO_SH36730x0 * const me)
 
 	//判断单体最低电压是否小于单体欠压限制值(mv)     欠压判断
 	
-	if(me->Output.SingleMinVoltage<g_SystemParameter.BMS.Discharge.DischargeForceStopVoltage)//2.55v
+	if(me->Output.SingleMinVoltage < g_SystemParameter.BMS.Discharge.DischargeForceStopVoltage)//2.55v
 	{
 		//GPIO_SetBits(GPIO_DSGING_EN_PORT, GPIO_DSGING_EN_PIN); //检测到单体欠压开启DSGING
 	    if(me->Output.BatteryCurrent>1500)//
@@ -1637,7 +1637,7 @@ void SH36730x0_SampleUpdate(AO_SH36730x0 * const me)
         {		
 
 			g_Protect.Variable.Count.UnderVoltageCount ++;    //电池欠压延时
-			if(g_Protect.Variable.Count.UnderVoltageCount > (g_SystemParameter.BMS.Protect.CellUnderVoltageDelay*10))
+			if(g_Protect.Variable.Count.UnderVoltageCount > (g_SystemParameter.BMS.Protect.CellUnderVoltageDelay*80))
 			{
 				Protect_SetFaultCodeLv1(&g_Protect, FAULT_BQ769_UV);//设置欠压故障
 				

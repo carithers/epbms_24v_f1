@@ -632,8 +632,8 @@ void SystemParameter_Init(void)
         
        // g_SystemParameter.BMS.ChargeGB.BalanceVoltage = 3100; 
         
-        g_SystemParameter.BMS.Discharge.DischargeForceStopVoltage = 2550;       // 强制结束放电电压
-        g_SystemParameter.BMS.Discharge.DischargeStopVoltage = 2700;            // 放电截止电压设定为3.0V
+        g_SystemParameter.BMS.Discharge.DischargeForceStopVoltage = 2800;       // 强制结束放电电压
+        g_SystemParameter.BMS.Discharge.DischargeStopVoltage = 3100;            // 放电截止电压设定为3.0V
 
          
         g_SystemParameter.BMS.CapacityCalibrate.CalibrateVoltage1 = 2700;               // 校准电压1，对应电量1%
@@ -1113,7 +1113,7 @@ void System_ParameterSet(void)
     
 
 	//g_AO_SH36730x0.State.BatteryBalanceEnable = 0;				// 电池均衡初始化时为关闭，由BMS状态机控制
-	g_AO_SH36730x0.Parameter.BallanceErrVoltage = 20;				// 默认电压误差超过20mV，电池均衡开启
+	g_AO_SH36730x0.Parameter.BallanceErrVoltage = 2000;				// 默认电压误差超过20mV，电池均衡开启
 /*	
 	// 当参数中禁用电池温度检测时，protect模块停止检测电池温度
 	if (g_SystemParameter.BMS.Battery.BatteryTemperatureCheckMode > 0)

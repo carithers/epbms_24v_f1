@@ -261,18 +261,18 @@ QState AO_BMS_Idle(AO_BMS * const me) {
         
         case Q_INIT_SIG:
         {
-            // 当额外电池均衡被触发时，持续均衡4H，退出空闲状态时取消
-            if (me->State.BatteryExtraBalance == 1)
-            {
-                me->State.BatteryExtraBalance = 0;
-                
-                status = Q_TRAN(&AO_BMS_ExtraBalance);      	// 跳转至空闲额外均流状态
-//                status = Q_TRAN(&AO_BMS_SleepDelay);            // 跳转至空闲睡眠状态
-            }
-            else
-            {
+//            // 当额外电池均衡被触发时，持续均衡4H，退出空闲状态时取消
+//            if (me->State.BatteryExtraBalance == 1)
+//            {
+//                me->State.BatteryExtraBalance = 0;
+//                
+//                status = Q_TRAN(&AO_BMS_ExtraBalance);      	// 跳转至空闲额外均流状态
+////                status = Q_TRAN(&AO_BMS_SleepDelay);            // 跳转至空闲睡眠状态
+//            }
+//            else
+//            {
                 status = Q_TRAN(&AO_BMS_SleepDelay);            // 跳转至空闲睡眠状态                            
-            }       
+//            }       
         }
         break;
         
@@ -611,9 +611,13 @@ QState AO_BMS_On(AO_BMS * const me) {
 #endif
 
 			// To be update：此参数考虑通过参数配置
-            g_AO_SH36730x0.Parameter.BallanceErrVoltage = 8;     	// 充放电时超过8mV电流均衡开启
+            g_AO_SH36730x0.Parameter.BallanceErrVoltage = 2000;     	// 充放电时超过8mV电流均衡开启
             g_AO_SH36730x0.State.BatteryBalanceEnable = 1;        // 开启均衡
      
+     
+            me->Variable.dsg_limit_cnt = 0;
+            me->Variable.dsg_cnt = 0;
+            me->Variable.chg_cnt = 0;
 
             // 定时器1作为1s定时时基用
             QActive_armX((QActive *)me, 1U, 1000U);     		// 开启定时器1，1s
@@ -694,15 +698,15 @@ QState AO_BMS_On(AO_BMS * const me) {
             QActive_armX((QActive *)me, 1U, 1000U);     		// 开启定时器1，1s
 			
 //=================================================================================================================			
-			if(Restart_balancing++>10 && (g_AO_SH36730x0.Output.BatteryCurrent) >-2000)//放电电流超过2A不开启均衡，放电电流持续检测50次符合条件开启均衡标志
-			{	
-			Restart_balancing=0;
-            g_AO_SH36730x0.State.BatteryBalanceEnable = 1;        // 开启均衡
-            }
-			else
-			{
-			Restart_balancing=0;
-			}
+//			if(Restart_balancing++>10 && (g_AO_SH36730x0.Output.BatteryCurrent) >-2000)//放电电流超过2A不开启均衡，放电电流持续检测50次符合条件开启均衡标志
+//			{	
+//			Restart_balancing=0;
+//            g_AO_SH36730x0.State.BatteryBalanceEnable = 1;        // 开启均衡
+//            }
+//			else
+//			{
+//			Restart_balancing=0;
+//			}
 			
 //===================================================================================================================           
             // 当处于输出状态，且电流不大于100mA时，电池放电累计时间++
@@ -711,32 +715,31 @@ QState AO_BMS_On(AO_BMS * const me) {
                 g_SystemRecord.DischargeTime++;                 // 累计放电时间+1s，单位1s
             }      
 			
-			if (g_AO_SH36730x0.Output.BatteryCurrent > 100
-				&& g_AO_SH36730x0.Output.SingleMaxVoltage > 4050)
-			{
-				// 充电接近最终阶段时，主动均流使能电压强制变小。
-				// 判断条件，电池处于充电阶段，且最大单体电压高于4.05V
-				g_AO_SH36730x0.Parameter.BallanceErrVoltage = 3;     	// 充放电时超过3mV电流均衡开启
-			}
-			else
-			{
-				// 正常情况下，主动均流开启电压为8mV，不建议超过10mV
-				g_AO_SH36730x0.Parameter.BallanceErrVoltage = 8;     	// 充放电时超过8mV电流均衡开启
-			}
+//			if (g_AO_SH36730x0.Output.BatteryCurrent > 100
+//				&& g_AO_SH36730x0.Output.SingleMaxVoltage > 4050)
+//			{
+//				// 充电接近最终阶段时，主动均流使能电压强制变小。
+//				// 判断条件，电池处于充电阶段，且最大单体电压高于4.05V
+//				g_AO_SH36730x0.Parameter.BallanceErrVoltage = 3;     	// 充放电时超过3mV电流均衡开启
+//			}
+//			else
+//			{
+//				// 正常情况下，主动均流开启电压为8mV，不建议超过10mV
+//				g_AO_SH36730x0.Parameter.BallanceErrVoltage = 8;     	// 充放电时超过8mV电流均衡开启
+//			}
             //充电检测，每1s检测一次
             if(g_AO_SH36730x0.Output.BatteryCurrent > 1500 || g_SystemState.State.bit.ChargeTempError > 0)//充电温度限制
             {
-                g_AO_BMS.Variable.ChargeCheckCnt++;
-                if(g_AO_BMS.Variable.ChargeCheckCnt > 5)        //充电判定时间暂定为5s
+                
+                if(g_AO_BMS.Variable.ChargeCheckCnt > 20)        //充电判定时间暂定为5s
                 {
                     g_SystemState.State.bit.ChargeOnFlag = 1;
-                    g_AO_BMS.Variable.ChargeCheckCnt = 10;
-                }
+                } else g_AO_BMS.Variable.ChargeCheckCnt++;
             }
             else
             {
-                g_SystemState.State.bit.ChargeOnFlag = 0;
-                g_AO_BMS.Variable.ChargeCheckCnt = 0;         
+                if(g_AO_BMS.Variable.ChargeCheckCnt)g_AO_BMS.Variable.ChargeCheckCnt--;
+                else g_SystemState.State.bit.ChargeOnFlag = 0;
             }
 			
             if(g_SystemState.State.bit.ChargeTempError > 0)
@@ -756,7 +759,75 @@ QState AO_BMS_On(AO_BMS * const me) {
                 g_AO_SH36730x0.State.CHGControl = 1;          		// BQ769x0开启放电MOSFET		
                 g_AO_SH36730x0.State.DSGControl = 1;          		// BQ769x0开启放电MOSFET
             }
-			
+            
+            
+            /// 充放电停止处理
+            
+            if(g_AO_SH36730x0.Output.SingleMinVoltage < g_SystemParameter.BMS.Discharge.DischargeForceStopVoltage) /// 2.8
+            {
+                me->Variable.dsg_limit_cnt++;
+                if(me->Variable.dsg_limit_cnt > ((g_SystemState.State.bit.ChargeOnFlag || g_AO_SH36730x0.Output.BatteryCurrent > -1000)?300:10))
+                {
+                    me->Output.SOC = 100;
+                    status = Q_TRAN(&AO_BMS_Idle);
+                }
+            } else if (g_AO_SH36730x0.Output.SingleMinVoltage < g_SystemParameter.BMS.Discharge.DischargeStopVoltage && g_SystemState.State.bit.ChargeOnFlag == 0) /// 3.1
+            {
+                me->Variable.dsg_cnt++;
+                if(me->Variable.dsg_cnt > 30)
+                {
+                    me->Output.SOC = 150;
+                    status = Q_TRAN(&AO_BMS_Idle);
+                }
+            } else {
+                me->Variable.dsg_limit_cnt = 0;
+                me->Variable.dsg_cnt = 0;
+            }
+            
+            
+            if (g_AO_SH36730x0.Output.SingleMaxVoltage > g_SystemParameter.BMS.Battery.CellChargeStopVoltage) /// 3.6
+            {
+                me->Variable.chg_cnt++;
+                if(me->Variable.chg_cnt > 10)
+                {
+                    me->Output.SOC = 900;
+                    status = Q_TRAN(&AO_BMS_Idle);
+                }
+            } else {
+                me->Variable.chg_cnt = 0;
+            }
+            
+            
+            /// 自动关机
+            // 当放电电流小于设定值且超过设定时间，强制结束放电  充放电电流小于600ma 循环900次进入空闲
+            // 当参数设置自动切断电流不为0时，方起作用
+            if (g_SystemParameter.BMS.Output.AutoCutoffCurrent > 0
+                && g_AO_SH36730x0.Output.BatteryCurrent < g_SystemParameter.BMS.Output.AutoCutoffCurrent
+                && g_AO_SH36730x0.Output.BatteryCurrent > -g_SystemParameter.BMS.Output.AutoCutoffCurrent)
+            {
+                me->Variable.AutoCutoffDelay++;
+                
+                if (me->Variable.AutoCutoffDelay >= g_SystemParameter.BMS.Output.AutoCutoffDelay
+                    && g_SystemState.State.bit.ChargeOnFlag == 0)
+                {                           
+                    status = Q_TRAN(&AO_BMS_Idle); 		// 跳转至BMS空闲状态                           
+                }
+                else if(me->Variable.AutoCutoffDelay >= g_SystemParameter.BMS.Output.AutoCutoffDelay * 8)
+                {
+                    status = Q_TRAN(&AO_BMS_Idle); 		// 跳转至BMS空闲状态  
+                }
+            }
+            else
+            {
+                me->Variable.AutoCutoffDelay = 0;
+            }
+            
+            
+            
+            
+            
+            
+			/*
 //			if(g_AO_SH36730x0.Output.SingleMinVoltage>g_SystemParameter.BMS.Discharge.DischargeForceStopVoltage)//欠压充电到2.55关闭标志
 //			{
 //               uv_flag=0;
@@ -1053,7 +1124,8 @@ QState AO_BMS_On(AO_BMS * const me) {
                         me->Variable.AutoCutoffDelay = 0;
                     }
                 }
-            }   
+            }
+            */
         }
         break;
         
@@ -1103,7 +1175,7 @@ QState AO_BMS_On(AO_BMS * const me) {
         case BMS_UPDATE_SIG:                					// BMS更新事件，每次数据更新完成发生
         {           
             // 更新电量
-            BatteryCapacity_Update(me); 
+//            BatteryCapacity_Update(me); 
             
             status = Q_HANDLED();
         }
