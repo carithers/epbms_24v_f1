@@ -235,7 +235,7 @@ void RCC_Config(void)
 		RCC_PCLKConfig(RCC_HCLK_Div1);				// 设置APB时钟，PCLK = HCLK
 		
 		// Take care: ADC时钟取决于ADC时钟模式，详情查看ADC_ClockModeConfig();
-		RCC_ADCCLKConfig(RCC_ADCCLK_PCLK_Div2);		// 设置ADC时钟，ADCCLK = PCLK / 2
+		RCC_ADCCLKConfig(RCC_ADCCLK_PCLK_Div4);		// 设置ADC时钟，ADCCLK = PCLK / 2
 		
 		RCC_I2CCLKConfig(RCC_I2C1CLK_SYSCLK);		// 设置I2C模块时钟，I2CCLK = SYSCLK
 	
@@ -243,7 +243,7 @@ void RCC_Config(void)
         //RCC_PCLK2Config(RCC_HCLK_Div1);            	// 设置高速AHB时钟，PCLK2 = HCLK     
 
         // 配置锁相环PLL，
-        RCC_PLLConfig(RCC_PLLSource_HSI, RCC_PLLMul_4);        //PLLCLK=8MHz*1=8 MHz 
+        RCC_PLLConfig(RCC_PLLSource_HSI_Div2, RCC_PLLMul_4);        //PLLCLK=4MHz*4=16 MHz 
         RCC_PLLCmd(ENABLE);                        //使能PLL
 		
         while(RCC_GetFlagStatus(RCC_FLAG_PLLRDY) == RESET)          //等待PLL稳定

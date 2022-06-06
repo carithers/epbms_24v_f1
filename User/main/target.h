@@ -83,7 +83,7 @@
 
 #define	DBTIME						2000		// 死区时间为2us， 部分产品死区不同，重点检查
 
-#define SYSTEM_FREQUENCY			32			// Define the system frequency (MHz)
+#define SYSTEM_FREQUENCY			16			// Define the system frequency (MHz)
 
 #define FASTSAMPLEISR_FREQUENCY 	20			// Define the FastSampleIsr frequency (kHz)
 #define MAINISR_FREQUENCY 			10			// Define the MainIsr frequency (kHz)
