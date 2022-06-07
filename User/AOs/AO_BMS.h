@@ -53,7 +53,10 @@ struct AO_BMS_Variable {
     u16 ChargeCheckCnt;                     // 充电状态判定计时
     u32 dsg_cnt;
     u32 dsg_limit_cnt;
+    u32 dsg_limit_cnt2;
     u32 chg_cnt;
+    u32 dsg_limit_flg;
+    s32 tc_voltage;
 };
 
 struct AO_BMS_Output {

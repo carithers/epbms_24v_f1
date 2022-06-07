@@ -24,5 +24,7 @@ void Debuger_Update(void);						// 系统调试用处理函数，运行在主循环中
 void System_ParameterSet(void);					// 系统模块参数根据EEPROM参数初始化
 void ChargerCommand_Update(void);               // 更新充电机控制指令 
 
+int get_temp_current_v(short t, int c);
+
 // End of system_module.h
 

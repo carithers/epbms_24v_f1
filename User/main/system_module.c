@@ -633,7 +633,7 @@ void SystemParameter_Init(void)
        // g_SystemParameter.BMS.ChargeGB.BalanceVoltage = 3100; 
         
         g_SystemParameter.BMS.Discharge.DischargeForceStopVoltage = 2800;       // 强制结束放电电压
-        g_SystemParameter.BMS.Discharge.DischargeStopVoltage = 3100;            // 放电截止电压设定为3.0V
+        g_SystemParameter.BMS.Discharge.DischargeStopVoltage = 3180;            // 放电截止电压设定为3.0V
 
          
         g_SystemParameter.BMS.CapacityCalibrate.CalibrateVoltage1 = 2700;               // 校准电压1，对应电量1%
@@ -1133,6 +1133,18 @@ void System_ParameterSet(void)
     g_ADC.Parameter.InnerDriveSensorOffset = g_SystemParameter.System.Calibration.InnerDriveSensorOffset;       // 内部驱动电压传感器偏置，单位0.1V 
     g_AO_BMS.Parameter.FanCurrent = g_SystemParameter.BMS.Fan.FanCurrent;                                       // 风扇运行电流，单位mA，
 
+}
+
+s32 get_temp_current_v(s16 t, s32 c)
+{
+    s32 temp_current_v = 0;
+    if(c < -1000)temp_current_v = -g_SystemParameter.BMS.Discharge.dsg_cc_low_k * c / g_SystemParameter.BMS.Battery.DesignCapacity / 10;
+    if(t < 150)
+    {
+        if(!g_SystemParameter.BMS.Discharge.dsg_tmp_low_k)g_SystemParameter.BMS.Discharge.dsg_tmp_low_k = 10;
+        temp_current_v += (250 - t) / 10 * (250 - t) * g_SystemParameter.BMS.Discharge.dsg_tmp_low_k / 400;
+    }
+    return temp_current_v;
 }
 
 

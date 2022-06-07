@@ -760,28 +760,46 @@ QState AO_BMS_On(AO_BMS * const me) {
                 g_AO_SH36730x0.State.DSGControl = 1;          		// BQ769x0开启放电MOSFET
             }
             
+            me->Variable.tc_voltage = get_temp_current_v(g_AO_BMS.Output.BatteryTemperatureHi, g_AO_SH36730x0.Output.BatteryCurrent);
+            
+            
+            if(me->Variable.dsg_limit_flg && g_AO_SH36730x0.Output.BatteryCurrent < -2000)
+            {
+                me->Variable.dsg_limit_cnt2++;
+                if(me->Variable.dsg_limit_cnt2 > 1)
+                {
+                    me->Variable.dsg_limit_cnt2 = 0;
+                    me->Output.SOC = 0;
+                    status = Q_TRAN(&AO_BMS_Idle);
+                }
+            }
             
             /// 充放电停止处理
-            
-            if(g_AO_SH36730x0.Output.SingleMinVoltage < g_SystemParameter.BMS.Discharge.DischargeForceStopVoltage) /// 2.8
+            if(g_AO_SH36730x0.Output.SingleMinVoltage < g_SystemParameter.BMS.Discharge.DischargeForceStopVoltage - me->Variable.tc_voltage) /// 2.8
             {
+                me->Variable.dsg_cnt++;
                 me->Variable.dsg_limit_cnt++;
                 if(me->Variable.dsg_limit_cnt > ((g_SystemState.State.bit.ChargeOnFlag || g_AO_SH36730x0.Output.BatteryCurrent > -1000)?300:10))
                 {
-                    me->Output.SOC = 100;
+                    me->Variable.dsg_limit_cnt = 0;
+                    me->Output.SOC = 50;
+                    me->Variable.dsg_limit_flg = 1;
                     status = Q_TRAN(&AO_BMS_Idle);
                 }
-            } else if (g_AO_SH36730x0.Output.SingleMinVoltage < g_SystemParameter.BMS.Discharge.DischargeStopVoltage && g_SystemState.State.bit.ChargeOnFlag == 0) /// 3.1
+            } else if (g_AO_SH36730x0.Output.SingleMinVoltage < g_SystemParameter.BMS.Discharge.DischargeStopVoltage - me->Variable.tc_voltage && g_SystemState.State.bit.ChargeOnFlag == 0) /// 3.1
             {
+                if(me->Variable.dsg_limit_cnt)me->Variable.dsg_limit_cnt--;
                 me->Variable.dsg_cnt++;
-                if(me->Variable.dsg_cnt > 30)
+                if(me->Variable.dsg_cnt > 60)
                 {
+                    me->Variable.dsg_cnt = 0;
                     me->Output.SOC = 150;
                     status = Q_TRAN(&AO_BMS_Idle);
                 }
             } else {
                 me->Variable.dsg_limit_cnt = 0;
-                me->Variable.dsg_cnt = 0;
+                if(me->Variable.dsg_cnt)me->Variable.dsg_cnt--;
+                me->Variable.dsg_limit_flg = 0;
             }
             
             
