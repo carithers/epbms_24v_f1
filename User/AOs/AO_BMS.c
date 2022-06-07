@@ -1493,6 +1493,7 @@ s32 time_IIC=1;
 // 电流精度为1mA，时间精度为1ms，电量精度为1mAH
 void BatteryCapacity_Update(AO_BMS * const me)
 {
+    return;
     // --------------------- 根据与上一次数据更新之间时间查，计算本次变化的电池电量 -------------------------
     l_ContactorCurrent = 0;
     if(g_Output.State.bit.FanEnable > 0)

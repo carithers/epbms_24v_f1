@@ -272,6 +272,10 @@ struct PROTECT_VARIABLE_CNT {
     u16 UnderTemperatureCnt;
     u16 OverVoltageCount;
     u16 UnderVoltageCount;
+    u16 temp1_cnt;
+    u16 temp2_cnt;
+    u16 temp1_flg;
+    u16 temp_c_cnt;
 };
 
 struct PROTECT_VARIABLE {

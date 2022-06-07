@@ -110,41 +110,41 @@ void System_1msInterrupt(void)
 ////===============================================================================
 	g_SystemState.Output.System1msInterruptCount++;
 	
-	// 此处增加一个充电机指令接收判断，超时判断，故障判断
-	if (g_SystemParameter.BMS.Charge.ChargerCommEnable > 0) //无此功能
-	{
-		l_CANNoChargerStateCount++;				
-		if (l_CANNoChargerStateCount > 1000)
-		{
-			l_CANNoChargerStateCount = 1000;
-			
-			// 超时，1s内未收到充电机发出的数据帧
-            g_ChargerOnlineFlag = 0;			
-		}
-        
-        // 充电机未在线且KEY为无效位时，方允许清除充电机故障标志位
-        // 防止出现以下情况：充电机报错，KEY未断开，电池响应并切断输出，此时发生CAN总线断线，若清除充电机故障，会导致电池立刻重新输出
-        // 必须等到KEY断开后，再清除充电机故障，保证电池KEY重新使能后，电池才允许再次输出
-        if (g_ChargerOnlineFlag == 0 && g_Input.Output.DIN_bits.bit.KEY == 0)
-        {
-            g_SystemState.State.bit.ChargerFaultFlag = 0;
-        } 
-        if(g_AO_SH36730x0.Output.BatteryCurrent >= g_SystemParameter.BMS.Charge2.ChargeCurrent)
-        {
-            if(g_AO_BMS.Output.BatteryTemperatureLow < g_SystemParameter.BMS.Charge2.ChargeLimitTemperature3*10)//10度
-            {
-                g_AO_BMS.State.OutputAllow = 0; 
-            }
-            else
-            {
-                g_AO_BMS.State.OutputAllow = 1;
-            }
-        }
-	}
-	else
-	{
-		l_CANNoChargerStateCount = 0;
-	}		
+//	// 此处增加一个充电机指令接收判断，超时判断，故障判断
+//	if (g_SystemParameter.BMS.Charge.ChargerCommEnable > 0) //无此功能
+//	{
+//		l_CANNoChargerStateCount++;				
+//		if (l_CANNoChargerStateCount > 1000)
+//		{
+//			l_CANNoChargerStateCount = 1000;
+//			
+//			// 超时，1s内未收到充电机发出的数据帧
+//            g_ChargerOnlineFlag = 0;			
+//		}
+//        
+//        // 充电机未在线且KEY为无效位时，方允许清除充电机故障标志位
+//        // 防止出现以下情况：充电机报错，KEY未断开，电池响应并切断输出，此时发生CAN总线断线，若清除充电机故障，会导致电池立刻重新输出
+//        // 必须等到KEY断开后，再清除充电机故障，保证电池KEY重新使能后，电池才允许再次输出
+//        if (g_ChargerOnlineFlag == 0 && g_Input.Output.DIN_bits.bit.KEY == 0)
+//        {
+//            g_SystemState.State.bit.ChargerFaultFlag = 0;
+//        } 
+//        if(g_AO_SH36730x0.Output.BatteryCurrent >= g_SystemParameter.BMS.Charge2.ChargeCurrent)
+//        {
+//            if(g_AO_BMS.Output.BatteryTemperatureLow < g_SystemParameter.BMS.Charge2.ChargeLimitTemperature3*10)//10度
+//            {
+//                g_AO_BMS.State.OutputAllow = 0; 
+//            }
+//            else
+//            {
+//                g_AO_BMS.State.OutputAllow = 1;
+//            }
+//        }
+//	}
+//	else
+//	{
+//		l_CANNoChargerStateCount = 0;
+//	}		
 //上位机烧录指令读取
 //===========================================================================================
 //		//30ms执行一次
@@ -180,37 +180,6 @@ void System_1msInterrupt(void)
 		// --------------------- 1s更新一次系统状态 -----------------------
 		SystemMonitor_Update();			
         
-        
-        if(g_SystemState.State.bit.ChargeOnFlag > 0 && g_Input.Output.DIN_bits.bit.KEY > 0)
-        {
-            if(g_AO_BMS.Output.BatteryTemperatureLow < g_SystemParameter.BMS.Charge2.ChargeLimitTemperature4 *10  //-2度
-                || g_AO_BMS.Output.BatteryTemperatureHi > (g_SystemParameter.BMS.Charge2.ChargeLimitTemperature1 *10 + 50))//55+5=60度
-            {
-                t_TempLowError++;
-                if(t_TempLowError > 5)
-                {
-                    t_TempLowError = 60;
-                    g_SystemState.State.bit.ChargeTempError = 1;                    
-                }
-            }
-            else if(g_AO_BMS.Output.BatteryTemperatureLow > g_SystemParameter.BMS.Charge2.ChargeLimitTemperature4 *10 + 20 //0度
-                && g_AO_BMS.Output.BatteryTemperatureHi < (g_SystemParameter.BMS.Charge2.ChargeLimitTemperature1 *10 - 50))//60度
-            {
-                t_TempLowError = 0;
-                g_SystemState.State.bit.ChargeTempError = 0;
-            }
-            if(g_SystemState.State.bit.ChargeTempError > 0)
-            {
-                Protect_SetFaultCodeLv2(&g_Protect,CHARGE_TEMPERATURE_FAULT);
-            }
-        }
-        else
-        {
-            t_TempLowError = 0;
-            g_SystemState.State.bit.ChargeTempError = 0;
-            g_SystemState.State.bit.ChargeOnFlag = 0;
-            g_SystemState.Variable.ChargeCurrentLimitDivision = 0;
-        }
 	}	
 	
     if(g_SystemParameter.BMS.Fan.FanMode == 2)//低电量提醒

@@ -587,7 +587,7 @@ void SystemParameter_Init(void)
     	g_SystemParameter.BMS.Battery.ShortCutDownCurrent = 380;
     	g_SystemParameter.BMS.Battery.OverCutDownCurrent = 150;
         g_SystemParameter.BMS.Battery.ChargeCurrentLimit = 15;					// 充电最大允许电流，15A，对应20AH电池	
-        g_SystemParameter.BMS.Battery.BatteryTemperatureCheckMode = 1;		// 使能电池温度检测
+        g_SystemParameter.BMS.Battery.BatteryTemperatureCheckMode = 2;		// 使能电池温度检测
 
         g_SystemParameter.BMS.Output.AutoCutoffCurrent = 600;					// 输出自动切断电流，600mA
         
@@ -598,7 +598,7 @@ void SystemParameter_Init(void)
     	g_SystemParameter.BMS.Battery.ShortCutDownCurrent = 380;
     	g_SystemParameter.BMS.Battery.OverCutDownCurrent = 150;
     	g_SystemParameter.BMS.Battery.ChargeCurrentLimit = 30;					// 充电最大允许电流，15A，对应20AH电池
-    	g_SystemParameter.BMS.Battery.BatteryTemperatureCheckMode = 1;		// 使能电池温度检测
+    	g_SystemParameter.BMS.Battery.BatteryTemperatureCheckMode = 2;		// 使能电池温度检测
     	
     	g_SystemParameter.BMS.Output.AutoCutoffCurrent = 600;					// 输出自动切断电流，600mA
 
@@ -625,7 +625,7 @@ void SystemParameter_Init(void)
         g_SystemParameter.BMS.Charge.ChargeFinishMinVoltage = 3500;           // 充电完成最小允许电压，单位mV
         g_SystemParameter.BMS.Charge.ChargeOverCurrentDelay = 30;               // 充电过流延时30s 
 
-        g_SystemParameter.BMS.Charge2.ChargeLimitTemperature1 = 55;
+        g_SystemParameter.BMS.Charge2.ChargeLimitTemperature1 = 60;
         g_SystemParameter.BMS.Charge2.ChargeLimitTemperature2 = 45;
         g_SystemParameter.BMS.Charge2.ChargeLimitTemperature3 = 10;
         g_SystemParameter.BMS.Charge2.ChargeLimitTemperature4 = -2;
@@ -656,7 +656,7 @@ void SystemParameter_Init(void)
     	g_SystemParameter.BMS.Warning.BDILowLevel2Percent = 15;					// 电池电量严重过低百分比，单位%
     	g_SystemParameter.BMS.Warning.BDILowLimitLift = 15;						// 电池电量低百分比，限制举升，单位%
     	g_SystemParameter.BMS.Warning.BDILowLimitSpeed = 7;						// 电池电量低百分比，限制车速，单位%
-    	g_SystemParameter.BMS.Warning.BMSOTemperatureCheckEnable = 1;			// 默认使能BMS管理板温度检测
+    	g_SystemParameter.BMS.Warning.BMSOTemperatureCheckEnable = 0;			// 默认使能BMS管理板温度检测
     	g_SystemParameter.BMS.Warning.BMSOverTemperature = 95;
         g_SystemParameter.BMS.Warning.LowSOCBeep = 17;
        // g_SystemParameter.BMS.Protect.CellSoftOverVoltage = 3680;               // 单体软件过压电压，单位1mV

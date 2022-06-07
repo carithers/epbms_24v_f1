@@ -301,6 +301,12 @@ void ADC_SlowUpdate(ADC_structDef* v)
 	
 	// The filter parameter = 7 / 8 = 0.875, the filter frequency is about 0.1Hz  
 	v->Output.BatteryNTCRes[0] = (v->Output.BatteryNTCRes[0] * 3 + l_temp) >> 2;//电池包温度
+    
+    // NTC resistance 1:                   //5100***************8
+	l_temp = (s32)v->Output.ADCResult[1] * 15000 / ((s32)4096 - (s32)v->Output.ADCResult[1]);		// 外部电阻，单位1欧姆
+	
+	// The filter parameter = 7 / 8 = 0.875, the filter frequency is about 0.1Hz  
+	v->Output.BatteryNTCRes[1] = (v->Output.BatteryNTCRes[1] * 3 + l_temp) >> 2;//电池包温度
 	
 	// NTC resistance 2:                                                        //板载NTC
 	temp_1 = (s32)v->Output.ADCResult[1] * 15000 / ((s32)4096 - (s32)v->Output.ADCResult[1]);		// 外部电阻，单位1欧姆

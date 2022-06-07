@@ -199,77 +199,92 @@ void Protect_SlowUpdate(Protect_structDef* v)
 {
     v->Variable.Count.SlowProtectUpdateCnt++;
 	// Take care: ?????ì?????????Ж???О???ì??????ì????s??ì???????
-	if (v->ProtectMode.bit.BatteryTemperatureCheck > 0)
+	if (g_SystemParameter.BMS.Battery.BatteryTemperatureCheckMode > 0)
 	{
-          //?????ì????
-//         if ((g_SystemState.State.bit.ChargeOnFlag > 0) 
-//              && ((g_AO_BMS.Output.BatteryTemperature[0] < (-50))))
-//        {
-//            v->Variable.Count.UnderTemperatureCnt ++;
-//            if(v->Variable.Count.UnderTemperatureCnt > 1000)
-//            {
-//                v->Variable.Count.UnderTemperatureCnt = 0;
-//                Protect_SetFaultCodeLv1( v, CHARGE_TEMPERATURE_FAULT);   //level0和level1的处理逻辑相同
-//            }
-//        }
-//        else
-//        {
-//            v->Variable.Count.UnderTemperatureCnt = 0;
-//        }
-        
-		//????????                                 65?
-		if (g_AO_BMS.Output.BatteryTemperature[0] > (g_SystemParameter.BMS.Battery.OverTemperature * 10)//65度
-			/*|| g_AO_BMS.Output.BatteryTemperature[1] > (g_SystemParameter.BMS.Battery.OverTemperature * 10)*/)			// ================???========================
-		{
-			v->Variable.Count.OverTemperatureCnt++;
-			
-			if (v->Variable.Count.OverTemperatureCnt > 1000)
-			{
-				v->Variable.Count.OverTemperatureCnt = 0;
-				
-				Protect_SetFaultCodeLv1(v, FAULT_BAT_OT);//???????????
-			}
-		}                                                              //-25?
-		else if (g_AO_BMS.Output.BatteryTemperature[0] < (g_SystemParameter.BMS.Battery.UnderTemperature * 10)//-25度
-				/*|| g_AO_BMS.Output.BatteryTemperature[1] < (g_SystemParameter.BMS.Battery.UnderTemperature * 10)*/)			// 电池温度过低，小亿25.0摄氏庿
-		{
-			v->Variable.Count.OverTemperatureCnt++;
-			
-			if (v->Variable.Count.OverTemperatureCnt > 1000)
-			{
-				v->Variable.Count.OverTemperatureCnt = 0;
-				
-				Protect_SetFaultCodeLv1(v, FAULT_BAT_UT);
-			}
-		}
-		else if (g_AO_BMS.Output.BatteryTemperature[0] > (g_SystemParameter.BMS.Battery.OverTemperature * 10 - 50)
-				 || g_AO_BMS.Output.BatteryTemperature[1] > (g_SystemParameter.BMS.Battery.OverTemperature * 10 - 50))
-		{
-			v->Variable.Count.OverTemperatureCnt++;
-			
-			if (v->Variable.Count.OverTemperatureCnt > 1000)
-			{
-				v->Variable.Count.OverTemperatureCnt = 0;
-				
-				Protect_SetFaultCodeLv2(v, WARNING_BATTERY_OVER_TEMPERATURE);
-			}
-		}
-		else if (g_AO_BMS.Output.BatteryTemperature[0] < (g_SystemParameter.BMS.Battery.UnderTemperature * 10 + 50) //-20度
-				|| g_AO_BMS.Output.BatteryTemperature[1] < (g_SystemParameter.BMS.Battery.UnderTemperature * 10 + 50))			// 电池温度过低，小亿25.0摄氏庿
-		{
-			v->Variable.Count.OverTemperatureCnt++;
-			
-			if (v->Variable.Count.OverTemperatureCnt > 1000)
-			{
-				v->Variable.Count.OverTemperatureCnt = 0;
-				
-				Protect_SetFaultCodeLv2(v, WARNING_BATTERY_UNDER_TEMPERATURE);
-			}
-		}	
-		else
-		{
-			v->Variable.Count.OverTemperatureCnt = 0;
-		}	
+        if(g_SystemState.State.bit.ChargeOnFlag > 0 && g_Input.Output.DIN_bits.bit.KEY > 0)
+        {
+            if((g_AO_BMS.Output.BatteryTemperature[0] < 1000 && g_AO_BMS.Output.BatteryTemperature[0] > g_SystemParameter.BMS.Charge2.ChargeLimitTemperature1 *10)
+                || (g_AO_BMS.Output.BatteryTemperature[1] < 1000 && g_AO_BMS.Output.BatteryTemperature[1] > g_SystemParameter.BMS.Charge2.ChargeLimitTemperature1 *10)
+                || (g_AO_BMS.Output.BatteryTemperature[0] > -500 && g_AO_BMS.Output.BatteryTemperature[0] < g_SystemParameter.BMS.Charge2.ChargeLimitTemperature4 *10)
+                || (g_AO_BMS.Output.BatteryTemperature[1] > -500 && g_AO_BMS.Output.BatteryTemperature[1] < g_SystemParameter.BMS.Charge2.ChargeLimitTemperature4 *10)
+                || ((g_AO_BMS.Output.BatteryTemperature[0] > 1000 || g_AO_BMS.Output.BatteryTemperature[0] < -500) && ((g_AO_BMS.Output.BatteryTemperature[1] > 1000) || g_AO_BMS.Output.BatteryTemperature[1] < -500))
+            )
+            {
+                if (v->Variable.Count.temp_c_cnt > 10000)
+                {
+                    g_SystemState.State.bit.ChargeTempError = 1;
+                    Protect_SetFaultCodeLv2(&g_Protect,CHARGE_TEMPERATURE_FAULT);
+                } else v->Variable.Count.temp_c_cnt++;
+            } else {
+                if(v->Variable.Count.temp_c_cnt)v->Variable.Count.temp_c_cnt--;
+                else g_SystemState.State.bit.ChargeTempError = 0;
+            }
+        } else {
+            if(g_AO_BMS.Output.BatteryTemperature[0] > 1000)
+            {
+                v->Variable.Count.temp1_cnt++;
+                if (v->Variable.Count.temp1_cnt > 10000)
+                {
+                    v->Variable.Count.temp1_flg = 1;
+                }
+            } else if (g_AO_BMS.Output.BatteryTemperature[0] > (g_SystemParameter.BMS.Battery.OverTemperature * 10))
+            {
+                v->Variable.Count.temp1_cnt++;
+                if (v->Variable.Count.temp1_cnt > 10000)
+                {
+                    Protect_SetFaultCodeLv1(v, FAULT_BAT_OT);
+                }
+            } else if (g_AO_BMS.Output.BatteryTemperature[0] < -500)
+            {
+                v->Variable.Count.temp1_cnt++;
+                if (v->Variable.Count.temp1_cnt > 10000)
+                {
+                    v->Variable.Count.temp1_flg = 1;
+                }
+            } else if (g_AO_BMS.Output.BatteryTemperature[0] < (g_SystemParameter.BMS.Battery.UnderTemperature * 10))
+            {
+                v->Variable.Count.temp1_cnt++;
+                if (v->Variable.Count.temp1_cnt > 10000)
+                {
+                    Protect_SetFaultCodeLv1(v, FAULT_BAT_UT);
+                }
+            } else {
+                v->Variable.Count.temp1_cnt = 0;
+                v->Variable.Count.temp1_flg = 0;
+            }
+            
+            if(g_AO_BMS.Output.BatteryTemperature[1] > 1000)
+            {
+                v->Variable.Count.temp2_cnt++;
+                if (v->Variable.Count.temp2_cnt > 10000 && v->Variable.Count.temp1_flg)
+                {
+                    Protect_SetFaultCodeLv1(v, WARNING_BATTERY_NTC_FAILURE);
+                }
+            } else if (g_AO_BMS.Output.BatteryTemperature[1] > (g_SystemParameter.BMS.Battery.OverTemperature * 10))
+            {
+                v->Variable.Count.temp2_cnt++;
+                if (v->Variable.Count.temp2_cnt > 10000)
+                {
+                    Protect_SetFaultCodeLv1(v, FAULT_BAT_OT);
+                }
+            } else if (g_AO_BMS.Output.BatteryTemperature[1] < -500)
+            {
+                v->Variable.Count.temp2_cnt++;
+                if (v->Variable.Count.temp2_cnt > 10000 && v->Variable.Count.temp1_flg)
+                {
+                    Protect_SetFaultCodeLv1(v, WARNING_BATTERY_NTC_FAILURE);
+                }
+            } else if (g_AO_BMS.Output.BatteryTemperature[1] < (g_SystemParameter.BMS.Battery.UnderTemperature * 10))
+            {
+                v->Variable.Count.temp2_cnt++;
+                if (v->Variable.Count.temp2_cnt > 10000)
+                {
+                    Protect_SetFaultCodeLv1(v, FAULT_BAT_UT);
+                }
+            } else {
+                v->Variable.Count.temp2_cnt = 0;
+            }
+        }
 	}
 
 #if (CONTROLLER_TARGET == BMS_EP_20_REV1_1_2TEMP || CONTROLLER_TARGET == BMS_EP_200_B2_1)		// 此硬件版本支持BMS管理板温度采栿
