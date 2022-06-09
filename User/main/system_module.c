@@ -575,101 +575,103 @@ void SystemParameter_Init(void)
 
 		
 	g_SystemParameter.BMS.Battery.AFESelect = BQ76930;
-    if(g_SystemParameter.System.Information.ParameterVersion == 10)                 // 电池总串数为8串
-    {
-        g_SystemParameter.BMS.Battery.SeriesNumber = 8;                     // 电池总串数为8串   
-     	g_SystemParameter.BMS.BatteryType.BatteryType = 1;                   //电池类型，0：三元 1：铁锂
-     	g_SystemParameter.BMS.BatteryType.BatteryTypeReal = 1;    
 
-        #if (BATTERY_VERSION == 121)
-    	g_SystemParameter.BMS.Battery.FullCapacity = 185;						// 电池完全充电电量，单位0.1AH
-    	g_SystemParameter.BMS.Battery.DesignCapacity = 182;						// 电池设计使用电量，单位0.1AH
-    	g_SystemParameter.BMS.Battery.ShortCutDownCurrent = 380;
-    	g_SystemParameter.BMS.Battery.OverCutDownCurrent = 150;
-        g_SystemParameter.BMS.Battery.ChargeCurrentLimit = 15;					// 充电最大允许电流，15A，对应20AH电池	
-        g_SystemParameter.BMS.Battery.BatteryTemperatureCheckMode = 2;		// 使能电池温度检测
+    g_SystemParameter.BMS.Battery.SeriesNumber = 8;                     // 电池总串数为8串   
+    g_SystemParameter.BMS.BatteryType.BatteryType = 1;                   //电池类型，0：三元 1：铁锂
+    g_SystemParameter.BMS.BatteryType.BatteryTypeReal = 1;    
 
-        g_SystemParameter.BMS.Output.AutoCutoffCurrent = 600;					// 输出自动切断电流，600mA
-        
-        g_SystemParameter.BMS.Charge.ChargeOverCurrent = 20;                    // 充电过流电流20A        
-    	#else       
-    	g_SystemParameter.BMS.Battery.FullCapacity = 460;					// 电池完全充电电量，单位0.1AH
-    	g_SystemParameter.BMS.Battery.DesignCapacity = 450;						// 电池设计使用电量，单位0.1AH
-    	g_SystemParameter.BMS.Battery.ShortCutDownCurrent = 380;
-    	g_SystemParameter.BMS.Battery.OverCutDownCurrent = 150;
-    	g_SystemParameter.BMS.Battery.ChargeCurrentLimit = 30;					// 充电最大允许电流，15A，对应20AH电池
-    	g_SystemParameter.BMS.Battery.BatteryTemperatureCheckMode = 2;		// 使能电池温度检测
-    	
-    	g_SystemParameter.BMS.Output.AutoCutoffCurrent = 600;					// 输出自动切断电流，600mA
+    #if (BATTERY_VERSION == 121)
+    g_SystemParameter.BMS.Battery.FullCapacity = 350;						// 电池完全充电电量，单位0.1AH
+    g_SystemParameter.BMS.Battery.DesignCapacity = 350;						// 电池设计使用电量，单位0.1AH
+    g_SystemParameter.BMS.Battery.ShortCutDownCurrent = 380;
+    g_SystemParameter.BMS.Battery.OverCutDownCurrent = 150;
+    g_SystemParameter.BMS.Battery.ChargeCurrentLimit = 15;					// 充电最大允许电流，15A，对应20AH电池	
+    g_SystemParameter.BMS.Battery.BatteryTemperatureCheckMode = 2;		// 使能电池温度检测
 
-        g_SystemParameter.BMS.Charge.ChargeOverCurrent = 35;                    // 充电过流电流20A                
-    	#endif
-        
-        g_SystemParameter.BMS.Battery.CellOverVoltage = 3700;
-        g_SystemParameter.BMS.Battery.CellUnderVoltage = 2400;
-        g_SystemParameter.BMS.Battery.ShortCutDownDelay = 500;            //50 100 200 500us
-        g_SystemParameter.BMS.Battery.OverCutDownDelay = 700;
-        g_SystemParameter.BMS.Battery.CellChargeStopVoltage = 3600;             // 单体充电至3.6V截止
-        g_SystemParameter.BMS.Battery.ChargeStopDelay = 12;                     // 电池充电完成延时，单位1s
-       // g_SystemParameter.BMS.Battery.BatteryTemperatureCheckMode = 2;          // 使能电池温度检测
-            
-        g_SystemParameter.BMS.Output.AutoCutoffDelay = 900;                     // 输出自动切断延时，900s
-        g_SystemParameter.BMS.Output.SleepDelay = 600;                          // BMS进入低功耗状态前延时，单位s
-        g_SystemParameter.BMS.Output.SleepDelayLong = 0;                       // BMS进入低功耗状态前长时间延时，单位h，与SleepDelay累加
-        g_SystemParameter.BMS.Output.OutputDelay = 500;                        // 开关按下1000ms后启动输出        
-        
-        g_SystemParameter.BMS.Charge.ChargeVoltageStep1 = 3400;                 // 充电电流阶段1，单体最高电压大于此电压，则充电电流由1C变为0.5C，单位1mV
-        g_SystemParameter.BMS.Charge.ChargeVoltageStep2 = 3500;                 // 充电电流阶段2，单体最高电压大于此电压，则充电电流由0.5C变为0.25C，单位1mV 
-        g_SystemParameter.BMS.Charge.ChargeVoltageStep3 = 3540;                 // 充电电流阶段3，单体最高电压大于此电压，则充电电流由0.25C变为0.125C，单位1mV   
-        g_SystemParameter.BMS.Charge.ChargeForceStopVoltage = 3660;             // 充电强制结束电压，单位mV
-        g_SystemParameter.BMS.Charge.ChargeFinishMinVoltage = 3500;           // 充电完成最小允许电压，单位mV
-        g_SystemParameter.BMS.Charge.ChargeOverCurrentDelay = 30;               // 充电过流延时30s 
-
-        g_SystemParameter.BMS.Charge2.ChargeLimitTemperature1 = 60;
-        g_SystemParameter.BMS.Charge2.ChargeLimitTemperature2 = 45;
-        g_SystemParameter.BMS.Charge2.ChargeLimitTemperature3 = 10;
-        g_SystemParameter.BMS.Charge2.ChargeLimitTemperature4 = -2;
-        
-       // g_SystemParameter.BMS.ChargeGB.BalanceVoltage = 3100; 
-        
-        g_SystemParameter.BMS.Discharge.DischargeForceStopVoltage = 2800;       // 强制结束放电电压
-        g_SystemParameter.BMS.Discharge.DischargeStopVoltage = 3180;            // 放电截止电压设定为3.0V
-
-         
-        g_SystemParameter.BMS.CapacityCalibrate.CalibrateVoltage1 = 2700;               // 校准电压1，对应电量1%
-        g_SystemParameter.BMS.CapacityCalibrate.CalibrateVoltageLowLimit1 = 2550;       // 校准电压1，最低限制值
-        g_SystemParameter.BMS.CapacityCalibrate.CalibrateVoltage2 = 2800;               // 校准电压2，对应电量3.3%
-        g_SystemParameter.BMS.CapacityCalibrate.CalibrateVoltageLowLimit2 = 2650;       // 校准电压2，最低限制值
-        g_SystemParameter.BMS.CapacityCalibrate.CalibrateVoltage3 = 3000;               // 校准电压3，对应电量10%
-        g_SystemParameter.BMS.CapacityCalibrate.CalibrateVoltageLowLimit3 = 2750;       // 校准电压3，最低限制值
-        g_SystemParameter.BMS.CapacityCalibrate.CalibrateVoltage4 = 3100;               // 校准电压4，对应电量20%
-        g_SystemParameter.BMS.CapacityCalibrate.CalibrateVoltageLowLimit4 = 2800;       // 校准电压4，最低限制值   
-
-        g_SystemParameter.BMS.BatteryType.BatteryType = 1;                      // 电池类型，0：三元，1：磷酸铁锂
-        g_SystemParameter.BMS.BatteryType.BatteryTypeReal = 1;
-
-
-        g_SystemParameter.BMS.Fan.FanEnableTemperature = 0;                     // 默认不开启低温禁止充电功能
-        g_SystemParameter.BMS.Fan.FanCurrent = 25;                              // 继电器工作电流25mA
-        g_SystemParameter.BMS.Fan.FanMode = 2;
-        g_SystemParameter.BMS.Warning.BDILowLevel1Percent = 30;					// 电池电量低百分比，单位%
-    	g_SystemParameter.BMS.Warning.BDILowLevel2Percent = 15;					// 电池电量严重过低百分比，单位%
-    	g_SystemParameter.BMS.Warning.BDILowLimitLift = 15;						// 电池电量低百分比，限制举升，单位%
-    	g_SystemParameter.BMS.Warning.BDILowLimitSpeed = 7;						// 电池电量低百分比，限制车速，单位%
-    	g_SystemParameter.BMS.Warning.BMSOTemperatureCheckEnable = 0;			// 默认使能BMS管理板温度检测
-    	g_SystemParameter.BMS.Warning.BMSOverTemperature = 95;
-        g_SystemParameter.BMS.Warning.LowSOCBeep = 17;
-       // g_SystemParameter.BMS.Protect.CellSoftOverVoltage = 3680;               // 单体软件过压电压，单位1mV
-       // g_SystemParameter.BMS.Protect.CellSoftOverVoltageDelay = 10;             // 单体软件过压延时，单位1s
-        g_SystemParameter.BMS.Protect.CellHardwareOverVoltageDelay = 1;         // 单体硬件过压延时，单位1s
-        g_SystemParameter.BMS.Protect.CellUnderVoltageDelay = 8;                // 单体欠压延时，单位s
-       // g_SystemParameter.BMS.Protect.ShortCurrentTimeFactor = 50;
-    }
+    g_SystemParameter.BMS.Output.AutoCutoffCurrent = 600;					// 输出自动切断电流，600mA
     
+    g_SystemParameter.BMS.Charge.ChargeOverCurrent = 20;                    // 充电过流电流20A        
+    #else       
+    g_SystemParameter.BMS.Battery.FullCapacity = 460;					// 电池完全充电电量，单位0.1AH
+    g_SystemParameter.BMS.Battery.DesignCapacity = 450;						// 电池设计使用电量，单位0.1AH
+    g_SystemParameter.BMS.Battery.ShortCutDownCurrent = 380;
+    g_SystemParameter.BMS.Battery.OverCutDownCurrent = 150;
+    g_SystemParameter.BMS.Battery.ChargeCurrentLimit = 30;					// 充电最大允许电流，15A，对应20AH电池
+    g_SystemParameter.BMS.Battery.BatteryTemperatureCheckMode = 2;		// 使能电池温度检测
+    
+    g_SystemParameter.BMS.Output.AutoCutoffCurrent = 600;					// 输出自动切断电流，600mA
+
+    g_SystemParameter.BMS.Charge.ChargeOverCurrent = 35;                    // 充电过流电流20A                
+    #endif
+    
+    g_SystemParameter.BMS.Battery.CellOverVoltage = 3700;
+    g_SystemParameter.BMS.Battery.CellUnderVoltage = 2400;
+    g_SystemParameter.BMS.Battery.ShortCutDownDelay = 500;            //50 100 200 500us
+    g_SystemParameter.BMS.Battery.OverCutDownDelay = 700;
+    g_SystemParameter.BMS.Battery.CellChargeStopVoltage = 3600;             // 单体充电至3.6V截止
+    g_SystemParameter.BMS.Battery.ChargeStopDelay = 12;                     // 电池充电完成延时，单位1s
+   // g_SystemParameter.BMS.Battery.BatteryTemperatureCheckMode = 2;          // 使能电池温度检测
+        
+    g_SystemParameter.BMS.Output.AutoCutoffDelay = 900;                     // 输出自动切断延时，900s
+    g_SystemParameter.BMS.Output.SleepDelay = 600;                          // BMS进入低功耗状态前延时，单位s
+    g_SystemParameter.BMS.Output.SleepDelayLong = 0;                       // BMS进入低功耗状态前长时间延时，单位h，与SleepDelay累加
+    g_SystemParameter.BMS.Output.OutputDelay = 500;                        // 开关按下1000ms后启动输出        
+    
+    g_SystemParameter.BMS.Charge.ChargeVoltageStep1 = 3400;                 // 充电电流阶段1，单体最高电压大于此电压，则充电电流由1C变为0.5C，单位1mV
+    g_SystemParameter.BMS.Charge.ChargeVoltageStep2 = 3500;                 // 充电电流阶段2，单体最高电压大于此电压，则充电电流由0.5C变为0.25C，单位1mV 
+    g_SystemParameter.BMS.Charge.ChargeVoltageStep3 = 3540;                 // 充电电流阶段3，单体最高电压大于此电压，则充电电流由0.25C变为0.125C，单位1mV   
+    g_SystemParameter.BMS.Charge.ChargeForceStopVoltage = 3660;             // 充电强制结束电压，单位mV
+    g_SystemParameter.BMS.Charge.ChargeFinishMinVoltage = 3500;           // 充电完成最小允许电压，单位mV
+    g_SystemParameter.BMS.Charge.ChargeOverCurrentDelay = 30;               // 充电过流延时30s 
+
+    g_SystemParameter.BMS.Charge2.ChargeLimitTemperature1 = 60;
+    g_SystemParameter.BMS.Charge2.ChargeLimitTemperature2 = 45;
+    g_SystemParameter.BMS.Charge2.ChargeLimitTemperature3 = 10;
+    g_SystemParameter.BMS.Charge2.ChargeLimitTemperature4 = -2;
+    
+   // g_SystemParameter.BMS.ChargeGB.BalanceVoltage = 3100; 
+    
+    g_SystemParameter.BMS.Discharge.DischargeForceStopVoltage = 2800;       // 强制结束放电电压
+    g_SystemParameter.BMS.Discharge.DischargeStopVoltage = 3150;            // 放电截止电压设定为3.0V
+
+     
+    g_SystemParameter.BMS.CapacityCalibrate.CalibrateVoltage1 = 2700;               // 校准电压1，对应电量1%
+    g_SystemParameter.BMS.CapacityCalibrate.CalibrateVoltageLowLimit1 = 2550;       // 校准电压1，最低限制值
+    g_SystemParameter.BMS.CapacityCalibrate.CalibrateVoltage2 = 2800;               // 校准电压2，对应电量3.3%
+    g_SystemParameter.BMS.CapacityCalibrate.CalibrateVoltageLowLimit2 = 2650;       // 校准电压2，最低限制值
+    g_SystemParameter.BMS.CapacityCalibrate.CalibrateVoltage3 = 3000;               // 校准电压3，对应电量10%
+    g_SystemParameter.BMS.CapacityCalibrate.CalibrateVoltageLowLimit3 = 2750;       // 校准电压3，最低限制值
+    g_SystemParameter.BMS.CapacityCalibrate.CalibrateVoltage4 = 3100;               // 校准电压4，对应电量20%
+    g_SystemParameter.BMS.CapacityCalibrate.CalibrateVoltageLowLimit4 = 2800;       // 校准电压4，最低限制值   
+
+    g_SystemParameter.BMS.BatteryType.BatteryType = 1;                      // 电池类型，0：三元，1：磷酸铁锂
+    g_SystemParameter.BMS.BatteryType.BatteryTypeReal = 1;
+
+
+    g_SystemParameter.BMS.Fan.FanEnableTemperature = 0;                     // 默认不开启低温禁止充电功能
+    g_SystemParameter.BMS.Fan.FanCurrent = 25;                              // 继电器工作电流25mA
+    g_SystemParameter.BMS.Fan.FanMode = 2;
+    g_SystemParameter.BMS.Warning.BDILowLevel1Percent = 30;					// 电池电量低百分比，单位%
+    g_SystemParameter.BMS.Warning.BDILowLevel2Percent = 15;					// 电池电量严重过低百分比，单位%
+    g_SystemParameter.BMS.Warning.BDILowLimitLift = 15;						// 电池电量低百分比，限制举升，单位%
+    g_SystemParameter.BMS.Warning.BDILowLimitSpeed = 7;						// 电池电量低百分比，限制车速，单位%
+    g_SystemParameter.BMS.Warning.BMSOTemperatureCheckEnable = 0;			// 默认使能BMS管理板温度检测
+    g_SystemParameter.BMS.Warning.BMSOverTemperature = 95;
+    g_SystemParameter.BMS.Warning.LowSOCBeep = 17;
+   // g_SystemParameter.BMS.Protect.CellSoftOverVoltage = 3680;               // 单体软件过压电压，单位1mV
+   // g_SystemParameter.BMS.Protect.CellSoftOverVoltageDelay = 10;             // 单体软件过压延时，单位1s
+    g_SystemParameter.BMS.Protect.CellHardwareOverVoltageDelay = 1;         // 单体硬件过压延时，单位1s
+    g_SystemParameter.BMS.Protect.CellUnderVoltageDelay = 8;                // 单体欠压延时，单位s
+   // g_SystemParameter.BMS.Protect.ShortCurrentTimeFactor = 50;
+
    	g_SystemParameter.BMS.Battery.OverTemperature = 65;
 	g_SystemParameter.BMS.Battery.UnderTemperature = -25; 
     g_SystemParameter.BMS.Output.SleepDelay = 600;							// BMS进入低功耗状态前延时，单位s
     g_SystemParameter.BMS.Output.SleepDelayLong = 0;                        // BMS进入低功耗状态前长时间延时，单位h，与SleepDelay累加
+    
+    g_SystemParameter.BMS.Discharge.dsg_cc_low_k = 90;
+    g_SystemParameter.BMS.Discharge.dsg_tmp_low_k = 10;
+    
 #elif (CONTROLLER_TARGET == BMS_EP_200_A1 || CONTROLLER_TARGET == BMS_EP_200_A2 || CONTROLLER_TARGET == BMS_EP_200_B1 || CONTROLLER_TARGET == BMS_EP_200_B2_1)
 
 	// 200系列BMS采用外部分流器，外部接触器控制正极通断设计，适用于60AH左右锂电池
@@ -1138,11 +1140,11 @@ void System_ParameterSet(void)
 s32 get_temp_current_v(s16 t, s32 c)
 {
     s32 temp_current_v = 0;
-    if(c < -1000)temp_current_v = -g_SystemParameter.BMS.Discharge.dsg_cc_low_k * c / g_SystemParameter.BMS.Battery.DesignCapacity / 10;
+    if(c < -1000)temp_current_v = -g_SystemParameter.BMS.Discharge.dsg_cc_low_k * c / g_SystemParameter.BMS.Battery.DesignCapacity / 100;
     if(t < 150)
     {
         if(!g_SystemParameter.BMS.Discharge.dsg_tmp_low_k)g_SystemParameter.BMS.Discharge.dsg_tmp_low_k = 10;
-        temp_current_v += (250 - t) / 10 * (250 - t) * g_SystemParameter.BMS.Discharge.dsg_tmp_low_k / 400;
+        temp_current_v += (250 - t) / 10 * (250 - t) * g_SystemParameter.BMS.Discharge.dsg_tmp_low_k / 500;
     }
     return temp_current_v;
 }

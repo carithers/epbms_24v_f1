@@ -569,6 +569,11 @@ QState AO_BMS_OnDelay(AO_BMS * const me) {
 // BMS_ON即电池输出状态，此状态可进一步细分多个子状态，比如预放电，接触器闭合，充电，放电等
 u8 Restart_balancing=0;//
 extern u16 UV_RECHARGE;
+
+#ifdef TEST_DELETE
+s32 td_nv = 3300, td_xv = 3300, td_bt = 10, td_bc = 0;
+#endif
+
 //u8 uv_flag=0;//欠压标志位
 QState AO_BMS_On(AO_BMS * const me) {
     
@@ -759,9 +764,16 @@ QState AO_BMS_On(AO_BMS * const me) {
                 g_AO_SH36730x0.State.CHGControl = 1;          		// BQ769x0开启放电MOSFET		
                 g_AO_SH36730x0.State.DSGControl = 1;          		// BQ769x0开启放电MOSFET
             }
+
+#ifdef TEST_DELETE
+            g_AO_SH36730x0.Output.SingleMinVoltage = td_nv;
+            g_AO_SH36730x0.Output.SingleMaxVoltage = td_xv;
+            g_AO_BMS.Output.BatteryTemperatureHi = td_bt;
+            g_AO_SH36730x0.Output.BatteryCurrent = td_bc;
+#endif
             
             me->Variable.tc_voltage = get_temp_current_v(g_AO_BMS.Output.BatteryTemperatureHi, g_AO_SH36730x0.Output.BatteryCurrent);
-            
+            if(me->Variable.tc_voltage > 300)me->Variable.tc_voltage = 300;
             
             if(me->Variable.dsg_limit_flg && g_AO_SH36730x0.Output.BatteryCurrent < -2000)
             {
