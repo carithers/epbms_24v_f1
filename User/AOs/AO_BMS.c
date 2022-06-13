@@ -644,6 +644,9 @@ QState AO_BMS_On(AO_BMS * const me) {
             
             me->State.OutputAllow = 0;                          // 电池输出总开关清除
             
+            g_SystemState.State.bit.ChargeOnFlag = 0;
+            g_AO_BMS.Variable.ChargeCheckCnt = 0;
+            
             // 退出充电时，计算本次充放电电量，并计算循环次数
 			// 正值为充电，负值为放电
 			// To be update：此变量加入monitor
