@@ -605,7 +605,7 @@ void SystemParameter_Init(void)
     #endif
     
     g_SystemParameter.BMS.Battery.CellOverVoltage = 3700;
-    g_SystemParameter.BMS.Battery.CellUnderVoltage = 2400;
+    g_SystemParameter.BMS.Battery.CellUnderVoltage = 2200;
     g_SystemParameter.BMS.Battery.ShortCutDownDelay = 500;            //50 100 200 500us
     g_SystemParameter.BMS.Battery.OverCutDownDelay = 700;
     g_SystemParameter.BMS.Battery.CellChargeStopVoltage = 3600;             // 单体充电至3.6V截止
@@ -661,7 +661,7 @@ void SystemParameter_Init(void)
    // g_SystemParameter.BMS.Protect.CellSoftOverVoltage = 3680;               // 单体软件过压电压，单位1mV
    // g_SystemParameter.BMS.Protect.CellSoftOverVoltageDelay = 10;             // 单体软件过压延时，单位1s
     g_SystemParameter.BMS.Protect.CellHardwareOverVoltageDelay = 1;         // 单体硬件过压延时，单位1s
-    g_SystemParameter.BMS.Protect.CellUnderVoltageDelay = 8;                // 单体欠压延时，单位s
+    g_SystemParameter.BMS.Protect.CellUnderVoltageDelay = 15;                // 单体欠压延时，单位s
    // g_SystemParameter.BMS.Protect.ShortCurrentTimeFactor = 50;
 
    	g_SystemParameter.BMS.Battery.OverTemperature = 65;

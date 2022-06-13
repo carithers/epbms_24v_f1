@@ -1617,40 +1617,23 @@ void SH36730x0_SampleUpdate(AO_SH36730x0 * const me)
 //------------------------------软件保护 -------------------------------------------
 
 	//判断单体最低电压是否小于单体欠压限制值(mv)     欠压判断
-	
-	if(me->Output.SingleMinVoltage < g_SystemParameter.BMS.Discharge.DischargeForceStopVoltage)//2.55v
-	{
-		//GPIO_SetBits(GPIO_DSGING_EN_PORT, GPIO_DSGING_EN_PIN); //检测到单体欠压开启DSGING
-	    if(me->Output.BatteryCurrent>1500)//
-		{
-		  UV_RECHARGE=1;
-		}
-		else
-		  UV_RECHARGE=0;
-			
-    if (UV_RECHARGE==0&&(me->Output.SingleMinVoltage < g_SystemParameter.BMS.Battery.CellUnderVoltage) )//2400mv
+    if ((me->Output.SingleMinVoltage < g_SystemParameter.BMS.Battery.CellUnderVoltage))//2400mv
     {    
         g_SystemMonitor.System.Reverse.Data[7]++;
 //======================================================================
 
-        if ((me->Variable.SampleUpdateCount > 20) && soft_uv_filter_cnt0++ > 40) //过滤上电初次采集的20次数据，连续欠压40次设置欠压故障，约8秒
-        {		
-
-			g_Protect.Variable.Count.UnderVoltageCount ++;    //电池欠压延时
-			if(g_Protect.Variable.Count.UnderVoltageCount > (g_SystemParameter.BMS.Protect.CellUnderVoltageDelay*80))
-			{
-				Protect_SetFaultCodeLv1(&g_Protect, FAULT_BQ769_UV);//设置欠压故障
-				
-				}
-			}
-		} 
+        if ((me->Variable.SampleUpdateCount > 20)) //过滤上电初次采集的20次数据，连续欠压40次设置欠压故障，约8秒
+        {
+            g_Protect.Variable.Count.UnderVoltageCount ++;    //电池欠压延时
+            if(g_Protect.Variable.Count.UnderVoltageCount > (g_SystemParameter.BMS.Protect.CellUnderVoltageDelay*5))
+            {
+                Protect_SetFaultCodeLv1(&g_Protect, FAULT_BQ769_UV);//设置欠压故障
+            }
+        }
+	} else {
+        g_Protect.Variable.Count.UnderVoltageCount = 0;
     }
-    else 
-    {
-	 UV_RECHARGE=0;
-	 soft_uv_filter_cnt0 = 0; 
-	 GPIO_ResetBits(GPIO_DSGING_EN_PORT,GPIO_DSGING_EN_PIN);
-	}
+    
                                        
     //电池单体过压
     if (me->Output.SingleMaxVoltage > g_SystemParameter.BMS.Battery.CellOverVoltage)

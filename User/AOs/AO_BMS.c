@@ -733,7 +733,7 @@ QState AO_BMS_On(AO_BMS * const me) {
 //				g_AO_SH36730x0.Parameter.BallanceErrVoltage = 8;     	// 充放电时超过8mV电流均衡开启
 //			}
             //充电检测，每1s检测一次
-            if(g_AO_SH36730x0.Output.BatteryCurrent > 1500 || g_SystemState.State.bit.ChargeTempError > 0)//充电温度限制
+            if(g_AO_SH36730x0.Output.BatteryCurrent > 1000 || g_SystemState.State.bit.ChargeTempError > 0)//充电温度限制
             {
                 
                 if(g_AO_BMS.Variable.ChargeCheckCnt > 20)        //充电判定时间暂定为5s
@@ -791,7 +791,7 @@ QState AO_BMS_On(AO_BMS * const me) {
             {
                 me->Variable.dsg_cnt++;
                 me->Variable.dsg_limit_cnt++;
-                if(me->Variable.dsg_limit_cnt > ((g_SystemState.State.bit.ChargeOnFlag || g_AO_SH36730x0.Output.BatteryCurrent > -1000)?300:10))
+                if(me->Variable.dsg_limit_cnt > ((g_SystemState.State.bit.ChargeOnFlag || g_AO_SH36730x0.Output.BatteryCurrent > -1000)?200:10))
                 {
                     me->Variable.dsg_limit_cnt = 0;
                     me->Output.SOC = 50;
