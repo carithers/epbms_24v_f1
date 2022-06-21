@@ -93,7 +93,7 @@ struct AO_SH36730x0_Variable {
 };
 
 struct AO_SH36730x0_Output {                                    //传出参数
-    s32 SingleVoltage[10];                                      // 电池单体电压，单位mV，最多10串
+    s32 SingleVoltage[15];                                      // 电池单体电压，单位mV，最多10串
     s32 BatteryVoltage;                                         // 电池总电压，单位mV
     s32 BatteryCurrent;                                         // 电池电流，单位mA，
     s32 InnerTemperature[3];                                    // BQ769x0温度传感器，测量内部温度，单位0.1摄氏度

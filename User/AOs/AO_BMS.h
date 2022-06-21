@@ -57,6 +57,9 @@ struct AO_BMS_Variable {
     u32 chg_cnt;
     u32 dsg_limit_flg;
     s32 tc_voltage;
+    u16 dsg_limit_power_flg;
+    u16 dsg_limit_power_cnt;
+    u16 dsg_limit_power_cnt2;
 };
 
 struct AO_BMS_Output {

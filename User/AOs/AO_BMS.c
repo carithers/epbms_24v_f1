@@ -789,6 +789,31 @@ QState AO_BMS_On(AO_BMS * const me) {
                 }
             }
             
+            if(g_AO_SH36730x0.Output.BatteryCurrent > 1500)
+            {
+                if(me->Variable.dsg_limit_power_cnt2++ > 60)
+                {
+                    me->Variable.dsg_limit_power_cnt2 = 0;
+                    me->Variable.dsg_limit_power_flg = 0;
+                }
+            }
+            
+            if(me->Output.SOC == 900 && g_AO_SH36730x0.Output.BatteryCurrent < -20000)
+            {
+                me->Output.SOC = 500;
+            }
+            
+            if(me->Variable.dsg_limit_power_flg && g_AO_SH36730x0.Output.BatteryCurrent < -15000)
+            {
+                me->Variable.dsg_limit_power_cnt++;
+                if(me->Variable.dsg_limit_power_cnt > 1)
+                {
+                    me->Variable.dsg_limit_power_cnt = 0;
+                    me->Output.SOC = 120;
+                    status = Q_TRAN(&AO_BMS_Idle);
+                }
+            }
+            
             /// 充放电停止处理
             if(g_AO_SH36730x0.Output.SingleMinVoltage < g_SystemParameter.BMS.Discharge.DischargeForceStopVoltage - me->Variable.tc_voltage) /// 2.8
             {
@@ -809,6 +834,7 @@ QState AO_BMS_On(AO_BMS * const me) {
                 {
                     me->Variable.dsg_cnt = 0;
                     me->Output.SOC = 150;
+                    me->Variable.dsg_limit_power_flg = 1;
                     status = Q_TRAN(&AO_BMS_Idle);
                 }
             } else {
@@ -824,6 +850,7 @@ QState AO_BMS_On(AO_BMS * const me) {
                 if(me->Variable.chg_cnt > 10)
                 {
                     me->Output.SOC = 900;
+                    me->Variable.dsg_limit_power_flg = 0;
                     status = Q_TRAN(&AO_BMS_Idle);
                 }
             } else {
