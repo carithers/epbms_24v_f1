@@ -904,9 +904,13 @@ QState AO_EEPROM_UpdateInformation(AO_EEPROM * const me) {
             g_SystemParameter.System.Information.SoftwareVersion = CONST_SOFTWARE_VERSION;
 			
             
-            g_SystemParameter.BMS.Battery.ChargeStopDelay = 60;                     // 电池充电完成延时，单位1s
+//            g_SystemParameter.BMS.Battery.ChargeStopDelay = 60;                     // 电池充电完成延时，单位1s
             
             g_SystemParameter.BMS.Discharge.DischargeStopVoltage = 3180;            // 放电截止电压设定为3.0V
+            
+            g_SystemParameter.BMS.Contactor.ContactorBaseFrequency = 20;			// 设置PWM频率，单位Hz
+            g_SystemParameter.BMS.Contactor.ContactorFullPercentTime = 2;		// 接触器启动时全占空比持续时间，单位ms
+            g_SystemParameter.BMS.Contactor.ContactorLongLastPercent = 150;			// 接触器长时间工作时占空比，单位0.1%
             
             // 擦除参数所在区域flash，此操作会造成mcu 停止工作�?0ms
             flash_EEPROM_Erase(&g_flash_EEPROM, EEPROM_Block_addr[EEPROM_BLOCK_PARAMETER]);

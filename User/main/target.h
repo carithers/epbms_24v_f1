@@ -47,7 +47,7 @@
 
 // ----------------------- 选择控制器，电机，更改后需执行严格测试，确保无错误 -----------------------
 #define	CONTROLLER_TARGET			BMS_EP_20_REV1_1_2TEMP  // 选择控制板硬件版本
-#define	CONST_SOFTWARE_VERSION		11761					// 软件版本V1.2 50AH经济型锂电池参数
+#define	CONST_SOFTWARE_VERSION		11763					// 软件版本V1.2 50AH经济型锂电池参数
                                                             //软件版本v1.4.3      20AH12EZ锂电池参数
 #define CONST_PARAMETER_VERSION     10                      //电芯类型，00代表三元，10代表铁锂                                                               
 #define BATTERY_VERSION             121                     //121对应的电芯为经济型锂电池20AH，参数与原12EZ的参数不同

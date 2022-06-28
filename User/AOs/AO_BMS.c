@@ -827,10 +827,10 @@ QState AO_BMS_On(AO_BMS * const me) {
             } else if(me->Output.SOC <= 150)
             {
                 if(g_SystemState.State.bit.ChargeOnFlag == 0)me->Variable.dsg2_cnt++;
-                if(g_AO_SH36730x0.Output.BatteryCurrent < -15000 || (me->Variable.dsg2_cnt >= 60))
+                if(g_AO_SH36730x0.Output.BatteryCurrent < -(g_SystemParameter.BMS.Contactor.ContactorLongLastPercent * 100) || (me->Variable.dsg2_cnt >= 58))
                 {
                     me->Variable.dsg_limit_power_cnt++;
-                    if(me->Variable.dsg_limit_power_cnt > 1)
+                    if(me->Variable.dsg_limit_power_cnt > g_SystemParameter.BMS.Contactor.ContactorFullPercentTime)
                     {
                         me->Variable.dsg2_cnt = 0;
                         me->Variable.dsg_limit_power_cnt = 0;
@@ -853,11 +853,12 @@ QState AO_BMS_On(AO_BMS * const me) {
                     me->Variable.dsg_limit_flg = 1;
                     status = Q_TRAN(&AO_BMS_Idle);
                 }
-            } else if ((g_AO_SH36730x0.Output.SingleMinVoltage < g_SystemParameter.BMS.Discharge.DischargeStopVoltage - me->Variable.tc_voltage) && g_SystemState.State.bit.ChargeOnFlag == 0) /// 3.1
+            } else if (((g_AO_SH36730x0.Output.SingleMinVoltage < g_SystemParameter.BMS.Discharge.DischargeStopVoltage - me->Variable.tc_voltage) && g_SystemState.State.bit.ChargeOnFlag == 0) /// 3.1
+             && me->Output.SOC > 150)
             {
                 if(me->Variable.dsg_limit_cnt)me->Variable.dsg_limit_cnt--;
                 me->Variable.dsg_cnt++;
-                if(me->Variable.dsg_cnt > g_SystemParameter.BMS.Battery.ChargeStopDelay)
+                if(me->Variable.dsg_cnt > g_SystemParameter.BMS.Contactor.ContactorBaseFrequency)
                 {
                     me->Variable.dsg_cnt = 0;
                     me->Output.SOC = 150;

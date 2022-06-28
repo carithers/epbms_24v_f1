@@ -672,6 +672,10 @@ void SystemParameter_Init(void)
     g_SystemParameter.BMS.Discharge.dsg_cc_low_k = 90;
     g_SystemParameter.BMS.Discharge.dsg_tmp_low_k = 10;
     
+    g_SystemParameter.BMS.Contactor.ContactorBaseFrequency = 20;			// 设置PWM频率，单位Hz
+	g_SystemParameter.BMS.Contactor.ContactorFullPercentTime = 2;		// 接触器启动时全占空比持续时间，单位ms
+	g_SystemParameter.BMS.Contactor.ContactorLongLastPercent = 150;			// 接触器长时间工作时占空比，单位0.1%
+    
 #elif (CONTROLLER_TARGET == BMS_EP_200_A1 || CONTROLLER_TARGET == BMS_EP_200_A2 || CONTROLLER_TARGET == BMS_EP_200_B1 || CONTROLLER_TARGET == BMS_EP_200_B2_1)
 
 	// 200系列BMS采用外部分流器，外部接触器控制正极通断设计，适用于60AH左右锂电池
