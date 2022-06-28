@@ -904,6 +904,9 @@ QState AO_EEPROM_UpdateInformation(AO_EEPROM * const me) {
             g_SystemParameter.System.Information.SoftwareVersion = CONST_SOFTWARE_VERSION;
 			
             
+            g_SystemParameter.BMS.Battery.ChargeStopDelay = 60;                     // 电池充电完成延时，单位1s
+            
+            g_SystemParameter.BMS.Discharge.DischargeStopVoltage = 3180;            // 放电截止电压设定为3.0V
             
             // 擦除参数所在区域flash，此操作会造成mcu 停止工作�?0ms
             flash_EEPROM_Erase(&g_flash_EEPROM, EEPROM_Block_addr[EEPROM_BLOCK_PARAMETER]);
@@ -1763,6 +1766,8 @@ void SystemRecord_Update(AO_EEPROM * const me)
             me->Variable.RecordWriteDelay = 0;
             me->State.RecordWriteAsk = 0;
         }
+    } else {
+        me->Variable.RecordWriteDelay = RECORD_WRITE_TIMER - 2;
     }
 }
 

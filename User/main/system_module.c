@@ -590,7 +590,7 @@ void SystemParameter_Init(void)
 
     g_SystemParameter.BMS.Output.AutoCutoffCurrent = 600;					// 输出自动切断电流，600mA
     
-    g_SystemParameter.BMS.Charge.ChargeOverCurrent = 20;                    // 充电过流电流20A        
+    g_SystemParameter.BMS.Charge.ChargeOverCurrent = 22;                    // 充电过流电流20A        
     #else       
     g_SystemParameter.BMS.Battery.FullCapacity = 460;					// 电池完全充电电量，单位0.1AH
     g_SystemParameter.BMS.Battery.DesignCapacity = 450;						// 电池设计使用电量，单位0.1AH
@@ -609,7 +609,7 @@ void SystemParameter_Init(void)
     g_SystemParameter.BMS.Battery.ShortCutDownDelay = 500;            //50 100 200 500us
     g_SystemParameter.BMS.Battery.OverCutDownDelay = 700;
     g_SystemParameter.BMS.Battery.CellChargeStopVoltage = 3600;             // 单体充电至3.6V截止
-    g_SystemParameter.BMS.Battery.ChargeStopDelay = 12;                     // 电池充电完成延时，单位1s
+    g_SystemParameter.BMS.Battery.ChargeStopDelay = 60;                     // 电池充电完成延时，单位1s
    // g_SystemParameter.BMS.Battery.BatteryTemperatureCheckMode = 2;          // 使能电池温度检测
         
     g_SystemParameter.BMS.Output.AutoCutoffDelay = 900;                     // 输出自动切断延时，900s
@@ -632,7 +632,7 @@ void SystemParameter_Init(void)
    // g_SystemParameter.BMS.ChargeGB.BalanceVoltage = 3100; 
     
     g_SystemParameter.BMS.Discharge.DischargeForceStopVoltage = 2800;       // 强制结束放电电压
-    g_SystemParameter.BMS.Discharge.DischargeStopVoltage = 3150;            // 放电截止电压设定为3.0V
+    g_SystemParameter.BMS.Discharge.DischargeStopVoltage = 3180;            // 放电截止电压设定为3.0V
 
      
     g_SystemParameter.BMS.CapacityCalibrate.CalibrateVoltage1 = 2700;               // 校准电压1，对应电量1%

@@ -622,6 +622,7 @@ QState AO_BMS_On(AO_BMS * const me) {
      
             me->Variable.dsg_limit_cnt = 0;
             me->Variable.dsg_cnt = 0;
+            me->Variable.dsg2_cnt = 0;
             me->Variable.chg_cnt = 0;
 
             // 定时器1作为1s定时时基用
@@ -778,24 +779,31 @@ QState AO_BMS_On(AO_BMS * const me) {
             me->Variable.tc_voltage = get_temp_current_v(g_AO_BMS.Output.BatteryTemperatureHi, g_AO_SH36730x0.Output.BatteryCurrent);
             if(me->Variable.tc_voltage > 300)me->Variable.tc_voltage = 300;
             
-            if(me->Variable.dsg_limit_flg && g_AO_SH36730x0.Output.BatteryCurrent < -2000)
-            {
-                me->Variable.dsg_limit_cnt2++;
-                if(me->Variable.dsg_limit_cnt2 > 1)
-                {
-                    me->Variable.dsg_limit_cnt2 = 0;
-                    me->Output.SOC = 0;
-                    status = Q_TRAN(&AO_BMS_Idle);
-                }
-            }
+            /// soc用来标志工作模式，如15%进入限制起升模式
+//            if(me->Variable.dsg_limit_flg && g_AO_SH36730x0.Output.BatteryCurrent < -2000)
+//            {
+//                me->Variable.dsg_limit_cnt2++;
+//                if(me->Variable.dsg_limit_cnt2 > 1)
+//                {
+//                    me->Variable.dsg_limit_cnt2 = 0;
+//                    me->Output.SOC = 0;
+//                    status = Q_TRAN(&AO_BMS_Idle);
+//                }
+//            }
             
-            if(g_AO_SH36730x0.Output.BatteryCurrent > 1500)
+            if(me->Output.SOC < 200 && g_AO_SH36730x0.Output.BatteryCurrent > 1500)
             {
                 if(me->Variable.dsg_limit_power_cnt2++ > 60)
                 {
                     me->Variable.dsg_limit_power_cnt2 = 0;
                     me->Variable.dsg_limit_power_flg = 0;
+                    me->Output.SOC = 200;
                 }
+            }
+            
+            if(me->Output.SOC < 300 && g_AO_SH36730x0.Output.SingleMinVoltage > 3250)
+            {
+                me->Output.SOC = 300;
             }
             
             if(me->Output.SOC == 900 && g_AO_SH36730x0.Output.BatteryCurrent < -20000)
@@ -803,16 +811,35 @@ QState AO_BMS_On(AO_BMS * const me) {
                 me->Output.SOC = 500;
             }
             
-            if(me->Variable.dsg_limit_power_flg && g_AO_SH36730x0.Output.BatteryCurrent < -15000)
+            
+            if(me->Output.SOC <= 50)
             {
-                me->Variable.dsg_limit_power_cnt++;
-                if(me->Variable.dsg_limit_power_cnt > 1)
+                if(g_AO_SH36730x0.Output.BatteryCurrent < -2000)
                 {
-                    me->Variable.dsg_limit_power_cnt = 0;
-                    me->Output.SOC = 120;
-                    status = Q_TRAN(&AO_BMS_Idle);
+                    me->Variable.dsg_limit_cnt2++;
+                    if(me->Variable.dsg_limit_cnt2 > 1)
+                    {
+                        me->Variable.dsg_limit_cnt2 = 0;
+                        me->Output.SOC = 0;
+                        status = Q_TRAN(&AO_BMS_Idle);
+                    }
+                }
+            } else if(me->Output.SOC <= 150)
+            {
+                if(g_SystemState.State.bit.ChargeOnFlag == 0)me->Variable.dsg2_cnt++;
+                if(g_AO_SH36730x0.Output.BatteryCurrent < -15000 || (me->Variable.dsg2_cnt >= 60))
+                {
+                    me->Variable.dsg_limit_power_cnt++;
+                    if(me->Variable.dsg_limit_power_cnt > 1)
+                    {
+                        me->Variable.dsg2_cnt = 0;
+                        me->Variable.dsg_limit_power_cnt = 0;
+                        me->Output.SOC = 120;
+                        status = Q_TRAN(&AO_BMS_Idle);
+                    }
                 }
             }
+            
             
             /// 充放电停止处理
             if(g_AO_SH36730x0.Output.SingleMinVoltage < g_SystemParameter.BMS.Discharge.DischargeForceStopVoltage - me->Variable.tc_voltage) /// 2.8
@@ -826,11 +853,11 @@ QState AO_BMS_On(AO_BMS * const me) {
                     me->Variable.dsg_limit_flg = 1;
                     status = Q_TRAN(&AO_BMS_Idle);
                 }
-            } else if (g_AO_SH36730x0.Output.SingleMinVoltage < g_SystemParameter.BMS.Discharge.DischargeStopVoltage - me->Variable.tc_voltage && g_SystemState.State.bit.ChargeOnFlag == 0) /// 3.1
+            } else if ((g_AO_SH36730x0.Output.SingleMinVoltage < g_SystemParameter.BMS.Discharge.DischargeStopVoltage - me->Variable.tc_voltage) && g_SystemState.State.bit.ChargeOnFlag == 0) /// 3.1
             {
                 if(me->Variable.dsg_limit_cnt)me->Variable.dsg_limit_cnt--;
                 me->Variable.dsg_cnt++;
-                if(me->Variable.dsg_cnt > 60)
+                if(me->Variable.dsg_cnt > g_SystemParameter.BMS.Battery.ChargeStopDelay)
                 {
                     me->Variable.dsg_cnt = 0;
                     me->Output.SOC = 150;
@@ -839,8 +866,7 @@ QState AO_BMS_On(AO_BMS * const me) {
                 }
             } else {
                 me->Variable.dsg_limit_cnt = 0;
-                if(me->Variable.dsg_cnt)me->Variable.dsg_cnt--;
-                me->Variable.dsg_limit_flg = 0;
+                me->Variable.dsg_cnt = 0;
             }
             
             
@@ -856,6 +882,8 @@ QState AO_BMS_On(AO_BMS * const me) {
             } else {
                 me->Variable.chg_cnt = 0;
             }
+            
+            
             
             
             /// 自动关机
