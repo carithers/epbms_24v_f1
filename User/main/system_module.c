@@ -632,7 +632,7 @@ void SystemParameter_Init(void)
    // g_SystemParameter.BMS.ChargeGB.BalanceVoltage = 3100; 
     
     g_SystemParameter.BMS.Discharge.DischargeForceStopVoltage = 2800;       // 强制结束放电电压
-    g_SystemParameter.BMS.Discharge.DischargeStopVoltage = 3180;            // 放电截止电压设定为3.0V
+    g_SystemParameter.BMS.Discharge.DischargeStopVoltage = 3160;            // 放电截止电压设定为3.0V
 
      
     g_SystemParameter.BMS.CapacityCalibrate.CalibrateVoltage1 = 2700;               // 校准电压1，对应电量1%

@@ -906,7 +906,7 @@ QState AO_EEPROM_UpdateInformation(AO_EEPROM * const me) {
             
 //            g_SystemParameter.BMS.Battery.ChargeStopDelay = 60;                     // 电池充电完成延时，单位1s
             
-            g_SystemParameter.BMS.Discharge.DischargeStopVoltage = 3180;            // 放电截止电压设定为3.0V
+            g_SystemParameter.BMS.Discharge.DischargeStopVoltage = 3160;            // 放电截止电压设定为3.0V
             
             g_SystemParameter.BMS.Contactor.ContactorBaseFrequency = 20;			// 设置PWM频率，单位Hz
             g_SystemParameter.BMS.Contactor.ContactorFullPercentTime = 2;		// 接触器启动时全占空比持续时间，单位ms
