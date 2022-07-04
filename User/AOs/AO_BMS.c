@@ -801,7 +801,7 @@ QState AO_BMS_On(AO_BMS * const me) {
                 }
             }
             
-            if(me->Output.SOC < 300 && g_AO_SH36730x0.Output.SingleMinVoltage > 3250)
+            if(me->Output.SOC < 300 && g_AO_SH36730x0.Output.SingleMinVoltage > 3300)
             {
                 me->Output.SOC = 300;
             }
